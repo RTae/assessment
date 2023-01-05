@@ -1,0 +1,16 @@
+version: '3.8'
+networks:
+  kkgo_ets_prod_net:
+    driver: bridge
+
+volumes: 
+  kkgo_ets_prod_persitance_postgresql:
+
+services:
+  ## Persistence layer
+  # Database
+  database:
+    extends:
+      file: infra/dev/database/docker-compose.yaml
+      service: database
+    restart: always
