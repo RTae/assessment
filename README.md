@@ -181,3 +181,39 @@
 * แต่ละ story ควรใช้ branch ของตัวเองแล้ว merge กลับไปที่ main ด้วย 3-way merge
 ![ตัวอย่าง](three-way-merge.png)
 
+## Setup guild
+### Devlopment
+1. Create environment variable by using `.env` file that contain the data which show below
+```bash
+PORT=2565
+DOMAIN=kkgo_dev.com
+
+DB_DATABASE=expense_db
+DB_USER=admin_dev
+DB_PASSWORD=4b2d5c67c29ad39dcb60a2ddcf6b0465
+DB_PORT=5432
+DATABASE_URL=postgresql://$DB_USER:$DB_PASSWORD@0.0.0.0:DB_PORT/$DB_DATABASE
+```
+2. Setup Database
+
+```bash
+sudo docker compose -f docker-compose.dev.yaml -p kkgo-ets-dev up -d
+```
+
+### Production
+1. Create environment variable by using `.env` file that contain the data which show below
+```bash
+PORT=2565
+DOMAIN=kkgo_prod.com
+
+DB_DATABASE=expense_db
+DB_USER=admin_prod
+DB_PASSWORD=a2c3daf674e752878546ce30778171ef
+DB_PORT=5432
+DATABASE_URL=postgresql://$DB_USER:$DB_PASSWORD@database.$DOMAIN:DB_PORT/$DB_DATABASE
+```
+2. Setup Database
+
+```bash
+sudo docker compose -f docker-compose.yaml -p kkgo-ets-prod up -d
+```
