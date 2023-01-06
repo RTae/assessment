@@ -3,7 +3,9 @@ package handlers
 import (
 	"database/sql"
 	"log"
+	"testing"
 
+	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/RTae/assessment/app/src/settings"
 	_ "github.com/lib/pq"
 )
@@ -39,4 +41,12 @@ func InitDB(settings settings.Config) (*sql.DB, func()) {
 
 	return db, func() { db.Close() }
 
+}
+
+func MockDatabase(t *testing.T) (*sql.DB, sqlmock.Sqlmock, func()) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	return db, mock, func() { db.Close() }
 }
