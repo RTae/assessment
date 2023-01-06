@@ -232,3 +232,11 @@ sudo docker compose -f docker-compose.yaml -p kkgo-ets-prod up -d
 ```bash
 PORT=:2565 DATABASE_URL=postgresql://admin_dev:4b2d5c67c29ad39dcb60a2ddcf6b0465@0.0.0.0:5432/expense_db?sslmode=disable go run app/server.go
 ```
+
+### Testing
+
+#### Unit test
+
+```bash
+go test -v ./...
+```
