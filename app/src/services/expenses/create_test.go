@@ -1,3 +1,5 @@
+//go:build unit
+
 package expenses
 
 import (
@@ -30,7 +32,7 @@ func TestCreateExpenseHandler(t *testing.T) {
 		db, mock, close := handlers.MockDatabase(t)
 		defer close()
 
-		insertMockRow := sqlmock.NewRows([]string{"id"}).AddRow("1")
+		insertMockRow := mock.NewRows([]string{"id"}).AddRow("1")
 		mock.ExpectQuery("INSERT INTO expenses").WillReturnRows(insertMockRow)
 
 		h := handler{db}
@@ -117,7 +119,7 @@ func TestCreateExpenseHandler(t *testing.T) {
 			db, mock, close := handlers.MockDatabase(t)
 			defer close()
 
-			insertMockRow := sqlmock.NewRows([]string{"id"}).AddRow("1")
+			insertMockRow := mock.NewRows([]string{"id"}).AddRow("1")
 			mock.ExpectQuery("INSERT INTO expenses").WillReturnRows(insertMockRow)
 
 			h := handler{db}
