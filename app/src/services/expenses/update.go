@@ -2,6 +2,7 @@ package expenses
 
 import (
 	"net/http"
+	"regexp"
 
 	"github.com/labstack/echo/v4"
 	"github.com/lib/pq"
@@ -35,6 +36,32 @@ func (h *handler) UpdateExpenseByID(c echo.Context) error {
 
 	err := row.Scan(&exp.ID)
 	if err != nil {
+		match, errMatch := regexp.MatchString("invalid input syntax", err.Error())
+		if match {
+			return c.JSON(
+				http.StatusUnprocessableEntity,
+				ErrorResponse{Code: http.StatusUnprocessableEntity, Message: "Param id must be integer"},
+			)
+		}
+		if errMatch != nil {
+			return c.JSON(
+				http.StatusInternalServerError,
+				ErrorResponse{Code: http.StatusInternalServerError, Message: err.Error()},
+			)
+		}
+		match, errMatch = regexp.MatchString("no rows in result set", err.Error())
+		if match {
+			return c.JSON(
+				http.StatusNotFound,
+				ErrorResponse{Code: http.StatusNotFound, Message: "Record not found"},
+			)
+		}
+		if errMatch != nil {
+			return c.JSON(
+				http.StatusInternalServerError,
+				ErrorResponse{Code: http.StatusInternalServerError, Message: err.Error()},
+			)
+		}
 		return c.JSON(
 			http.StatusInternalServerError,
 			ErrorResponse{Code: http.StatusInternalServerError, Message: err.Error()},

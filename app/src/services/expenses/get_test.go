@@ -27,7 +27,7 @@ func TestGetExpenseHandler(t *testing.T) {
 		db, mock, close := handlers.MockDatabase(t)
 		defer close()
 
-		getMockRows := sqlmock.NewRows([]string{"ID", "Title", "Amount", "Note", "Tags"}).
+		getMockRows := mock.NewRows([]string{"ID", "Title", "Amount", "Note", "Tags"}).
 			AddRow(
 				"1",
 				"strawberry smoothie",
