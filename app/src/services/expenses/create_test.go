@@ -46,7 +46,7 @@ func TestCreateExpensesHandler(t *testing.T) {
 		expected := "{\"id\":1,\"title\":\"strawberry smoothie\",\"amount\":79,\"note\":\"night market promotion discount 10 bath\",\"tags\":[\"food\",\"beverage\"]}"
 
 		// Act
-		err := h.CreateExpenses(c)
+		err := h.CreateExpense(c)
 
 		// Assert
 		if assert.NoError(t, err) {
@@ -133,7 +133,7 @@ func TestCreateExpensesHandler(t *testing.T) {
 			expected := tt.expected
 
 			// Act
-			err := h.CreateExpenses(c)
+			err := h.CreateExpense(c)
 
 			// Assert
 			if assert.NoError(t, err) {
@@ -167,7 +167,7 @@ func TestCreateExpensesHandler(t *testing.T) {
 		expected := "{\"statusCode\":500,\"message\":\"canceling query due to user request\"}"
 
 		// Act
-		err := h.CreateExpenses(c)
+		err := h.CreateExpense(c)
 
 		// Assert
 		if assert.NoError(t, err) {
