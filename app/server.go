@@ -21,7 +21,9 @@ func initRoute(e *echo.Echo, db *sql.DB) {
 	expensesHandler := expenses.CreateHandler(db)
 
 	g := e.Group("expenses")
-	g.POST("", expensesHandler.CreateExpenses)
+	g.POST("", expensesHandler.CreateExpense)
+	g.GET("", expensesHandler.GetExpenses)
+	g.GET("/:id", expensesHandler.GetExpenseByID)
 
 	e.GET("/health", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, "OK")

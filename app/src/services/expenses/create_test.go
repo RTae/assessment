@@ -1,7 +1,6 @@
 package expenses
 
 import (
-	"database/sql"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -9,19 +8,12 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/RTae/assessment/app/src/handlers"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )
 
-func mock_database(t *testing.T) (*sql.DB, sqlmock.Sqlmock, func()) {
-	db, mock, err := sqlmock.New()
-	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
-	}
-	return db, mock, func() { db.Close() }
-}
-
-func TestCreateExpensesHandler(t *testing.T) {
+func TestCreateExpenseHandler(t *testing.T) {
 	t.Run("Should create new expense successfully", func(t *testing.T) {
 		// Arrange
 		e := echo.New()
@@ -35,7 +27,7 @@ func TestCreateExpensesHandler(t *testing.T) {
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 		rec := httptest.NewRecorder()
 
-		db, mock, close := mock_database(t)
+		db, mock, close := handlers.MockDatabase(t)
 		defer close()
 
 		insertMockRow := sqlmock.NewRows([]string{"id"}).AddRow("1")
@@ -46,7 +38,7 @@ func TestCreateExpensesHandler(t *testing.T) {
 		expected := "{\"id\":1,\"title\":\"strawberry smoothie\",\"amount\":79,\"note\":\"night market promotion discount 10 bath\",\"tags\":[\"food\",\"beverage\"]}"
 
 		// Act
-		err := h.CreateExpenses(c)
+		err := h.CreateExpense(c)
 
 		// Assert
 		if assert.NoError(t, err) {
@@ -122,7 +114,7 @@ func TestCreateExpensesHandler(t *testing.T) {
 			req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 			rec := httptest.NewRecorder()
 
-			db, mock, close := mock_database(t)
+			db, mock, close := handlers.MockDatabase(t)
 			defer close()
 
 			insertMockRow := sqlmock.NewRows([]string{"id"}).AddRow("1")
@@ -133,7 +125,7 @@ func TestCreateExpensesHandler(t *testing.T) {
 			expected := tt.expected
 
 			// Act
-			err := h.CreateExpenses(c)
+			err := h.CreateExpense(c)
 
 			// Assert
 			if assert.NoError(t, err) {
@@ -157,7 +149,7 @@ func TestCreateExpensesHandler(t *testing.T) {
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 		rec := httptest.NewRecorder()
 
-		db, mock, close := mock_database(t)
+		db, mock, close := handlers.MockDatabase(t)
 		defer close()
 
 		mock.ExpectQuery("INSERT INTO expenses").WillReturnError(sqlmock.ErrCancelled)
@@ -167,7 +159,7 @@ func TestCreateExpensesHandler(t *testing.T) {
 		expected := "{\"statusCode\":500,\"message\":\"canceling query due to user request\"}"
 
 		// Act
-		err := h.CreateExpenses(c)
+		err := h.CreateExpense(c)
 
 		// Assert
 		if assert.NoError(t, err) {
