@@ -181,7 +181,7 @@
 * แต่ละ story ควรใช้ branch ของตัวเองแล้ว merge กลับไปที่ main ด้วย 3-way merge
 ![ตัวอย่าง](three-way-merge.png)
 
-## Setup guild
+## Setup guildline
 
 ### Setup infrastructure
 
@@ -217,7 +217,7 @@ DB_PASSWORD=a2c3daf674e752878546ce30778171ef
 DB_PORT=5432
 ```
 
-1. Setup Database
+2. Setup Database
 
 ```bash
 sudo docker compose -f docker-compose.yaml -p kkgo-ets-prod up -d
