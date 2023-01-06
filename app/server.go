@@ -2,27 +2,51 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
 	"github.com/RTae/assessment/app/src/handlers"
+	"github.com/RTae/assessment/app/src/services/expenses"
+	"github.com/RTae/assessment/app/src/settings"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 )
 
-func main() {
-	handlers.InitDB()
+func initRoute(e *echo.Echo, db *sql.DB) {
 
-	e := echo.New()
-	e.Logger.SetLevel(log.INFO)
-	e.GET("/", func(c echo.Context) error {
+	expensesHandler := expenses.CreateHandler(db)
+
+	g := e.Group("expenses")
+	g.POST("", expensesHandler.CreateExpenses)
+
+	e.GET("/health", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, "OK")
 	})
+}
+
+func initMiddleware(e *echo.Echo, db *sql.DB) {
+	e.Logger.SetLevel(log.INFO)
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
+}
+
+func main() {
+	settings := settings.Setting()
+	database, close := handlers.InitDB(settings)
+	defer close()
+
+	e := echo.New()
+
+	initMiddleware(e, database)
+	initRoute(e, database)
 
 	go func() {
-		if err := e.Start(os.Getenv("PORT")); err != nil && err != http.ErrServerClosed { // Start server
+		if err := e.Start(settings.Port); err != nil && err != http.ErrServerClosed {
 			e.Logger.Fatal("shutting down the server")
 		}
 	}()
@@ -35,4 +59,5 @@ func main() {
 	if err := e.Shutdown(ctx); err != nil {
 		e.Logger.Fatal(err)
 	}
+	log.Print("Server stopped")
 }

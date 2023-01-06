@@ -3,19 +3,13 @@ package handlers
 import (
 	"database/sql"
 	"log"
-	"os"
 
+	"github.com/RTae/assessment/app/src/settings"
 	_ "github.com/lib/pq"
 )
 
-var db *sql.DB
-
-func InitDB() {
+func migrateDB(db *sql.DB) {
 	var err error
-	db, err = sql.Open("postgres", os.Getenv("DATABASE_URL"))
-	if err != nil {
-		log.Fatal("Connect to database error", err)
-	}
 
 	createTb := `
 	CREATE TABLE IF NOT EXISTS expenses (
@@ -31,5 +25,18 @@ func InitDB() {
 	if err != nil {
 		log.Fatal("can't create table", err)
 	}
+}
+
+func InitDB(settings settings.Config) (*sql.DB, func()) {
+	var err error
+	var db *sql.DB
+	db, err = sql.Open("postgres", settings.DatabaseUrl)
+	if err != nil {
+		log.Fatal("Connect to database error", err)
+	}
+	migrateDB(db)
+	log.Println("Database Initialized")
+
+	return db, func() { db.Close() }
 
 }

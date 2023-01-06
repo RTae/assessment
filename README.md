@@ -181,7 +181,7 @@
 * แต่ละ story ควรใช้ branch ของตัวเองแล้ว merge กลับไปที่ main ด้วย 3-way merge
 ![ตัวอย่าง](three-way-merge.png)
 
-## Setup guild
+## Setup guildline
 
 ### Setup infrastructure
 

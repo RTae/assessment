@@ -1,13 +1,24 @@
-package user
+package expenses
 
-type User struct {
+import "database/sql"
+
+type handler struct {
+	db *sql.DB
+}
+
+type Expenses struct {
+	ID     int      `json:"id"`
 	Title  string   `json:"title"`
 	Amount float32  `json:"amount"`
 	Note   string   `json:"note"`
-	Tags   []string `json:"Tags"`
+	Tags   []string `json:"tags"`
 }
 
-type Err struct {
+type ErrorResponse struct {
 	Code    int    `json:"statusCode"`
 	Message string `json:"message"`
+}
+
+func CreateHandler(db *sql.DB) *handler {
+	return &handler{db}
 }
