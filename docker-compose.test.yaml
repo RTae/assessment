@@ -1,25 +1,25 @@
 version: '3.8'
 networks:
-  kkgo_ets_prod_net:
+  kkgo_ets_test_net:
     driver: bridge
 
 volumes: 
-  kkgo_ets_prod_persitance_postgresql:
+  kkgo_ets_test_persitance_postgresql:
 
 services:
-  # Persistence layer
-  ## Database
+  ## Persistence layer
+  # Database
   database:
     extends:
-      file: infra/prod/database/docker-compose.yaml
+      file: infra/test/database/docker-compose.yaml
       service: database
     restart: always
 
   # Service layer
   ## Expense tracking
-  expense-tracking:
+  expense_tracking:
     extends:
-      file: infra/prod/expense-tracking/docker-compose.yaml
+      file: infra/test/expense-tracking/docker-compose.yaml
       service: expense_tracking
     restart: always
     depends_on:

@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  expense_tracking:
+    build:
+      context: ../../../
+      dockerfile: ./infra/prod/expense-tracking/build-image/Dockerfile
+    image: $IMAGE_NAME/expense_tracking:$VERSION
+    container_name: expense_tracking.$DOMAIN
+    ports:
+      - $PORT:$PORT
+    environment:
+      TZ: Asia/Bangkok
+      PORT: :$PORT
+      DATABASE_URL: $DB_URL
+    networks:
+      - kkgo_ets_prod_net

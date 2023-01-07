@@ -1,0 +1,23 @@
+version: '3.8'
+networks:
+  kkgo_ets_test_net:
+    driver: bridge
+
+volumes: 
+  kkgo_ets_test_persitance_postgresql:
+
+services:
+  database:
+    image: postgres:14
+    container_name: database.$DOMAIN
+    environment:
+      # timezone must be synchronized
+      TZ: Asia/Bangkok
+      POSTGRES_DB: $DB_DATABASE
+      POSTGRES_USER: $DB_USER
+      POSTGRES_PASSWORD: $DB_PASSWORD
+      PGDATA: /var/lib/postgresql/data/pgdata
+    networks:
+      - kkgo_ets_test_net
+    volumes:
+      - kkgo_ets_test_persitance_postgresql:/var/lib/postgresql/data:rw

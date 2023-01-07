@@ -185,9 +185,8 @@
 
 ### Setup infrastructure
 
-#### Devlopment
-
-1. Create environment variable by using `.env` file that contain the data which show below
+1. Devlopment
+   1. Create environment variable by using `.env` file that contain the data which show below
 
 ```bash
 DOMAIN=kkgo_dev.com
@@ -198,45 +197,90 @@ DB_PASSWORD=4b2d5c67c29ad39dcb60a2ddcf6b0465
 DB_PORT=5432
 ```
 
-2. Setup Database
+   2. Start service
 
 ```bash
-sudo docker compose -f docker-compose.dev.yaml -p kkgo-ets-dev up -d
+docker compose -f docker-compose.dev.yaml -p kkgo-ets-dev up -d
 ```
 
-#### Production
+   3. Down service (optional)
+```bash
+docker compose -f docker-compose.dev.yaml -p kkgo-ets-dev down
+```
 
-1. Create environment variable by using `.env` file that contain the data which show below
+1. Production
+   1. Create environment variable by using `.env` file that contain the data which show below
 
 ```bash
 DOMAIN=kkgo_prod.com
+IMAGE_NAME=kkgo
+VERSION=1.0.0
+
+PORT=2565
 
 DB_DATABASE=expense_db
 DB_USER=admin_prod
 DB_PASSWORD=a2c3daf674e752878546ce30778171ef
 DB_PORT=5432
-```
-
-2. Setup Database
-
-```bash
-sudo docker compose -f docker-compose.yaml -p kkgo-ets-prod up -d
+DB_URL=postgresql://$DB_USER:$DB_PASSWORD@database.$DOMAIN:$DB_PORT/$DB_DATABASE?sslmode=disable
 ```
 
 ### Start service
 
-#### Devlopment
-
-1. Run the script to start the service
-
+1. Devlopment
+   1. Run the script to start the service
+   
 ```bash
 PORT=:2565 DATABASE_URL=postgresql://admin_dev:4b2d5c67c29ad39dcb60a2ddcf6b0465@0.0.0.0:5432/expense_db?sslmode=disable go run app/server.go
 ```
 
+2. Production
+   1. Start service
+
+```bash
+docker compose -f docker-compose.yaml -p kkgo-ets-prod up --build -d
+```
+
+   3. Down service (optional)
+```bash
+docker compose -f docker-compose.yaml -p kkgo-ets-prod down
+```
+
 ### Testing
 
-#### Unit test
+1. Unit test
+	1. Run unit test
 
 ```bash
 go test -v -tags unit ./...
+```
+
+2. Integration test
+
+   1. Create environment variable by using `.env` file that contain the data which show below
+   
+```bash
+DOMAIN=kkgo_test.com
+IMAGE_NAME=kkgo
+VERSION=1.0.0
+
+PORT=2565
+
+DB_DATABASE=expense_db
+DB_USER=admin_test
+DB_PASSWORD=418fec5f0f023b7a3f5766e8202f8e1c
+DB_PORT=5432
+DB_URL=postgresql://$DB_USER:$DB_PASSWORD@database.$DOMAIN:$DB_PORT/$DB_DATABASE?sslmode=disable
+```
+
+
+   2. Start service
+
+```bash
+docker compose -f docker-compose.test.yaml -p kkgo-ets-test up --build --abort-on-container-exit --exit-code-from expense_tracking
+```
+
+   3. Down service (optional)
+```bash
+docker compose -f docker-compose.test.yaml -p kkgo-ets-test down
 ```

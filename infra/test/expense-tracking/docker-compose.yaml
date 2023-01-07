@@ -1,0 +1,18 @@
+version: "3.8"
+
+networks:
+  kkgo_ets_test_net:
+    driver: bridge
+
+services:
+  expense_tracking:
+    build:
+      context: ../../../
+      dockerfile: ./infra/test/expense-tracking/build-image/Dockerfile
+    image: $IMAGE_NAME/expense_tracking:$VERSION
+    container_name: expense_tracking.$DOMAIN
+    command: /bin/sh -c "CGO_ENABLED=0 PORT=:$PORT DATABASE_URL=$DB_URL go test -v -tags it ./..."
+    environment:
+      TZ: Asia/Bangkok
+    networks:
+      - kkgo_ets_test_net
