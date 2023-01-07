@@ -71,7 +71,7 @@ jobs:
         uses: SpicyPizza/create-envfile@v1.3
         with:
           envkey_DOMAIN: "kkgo_test.com"
-          envkey_IMAGE_NAME: "ghcr.io/RTae/assessment"
+          envkey_IMAGE_NAME: "ghcr.io/rtae/assessment"
           envkey_VERSION: ${{ env.GITHUB_SHA }}
           envkey_PORT: "2565"
           envkey_DB_DATABASE: "expense_db"
@@ -96,9 +96,9 @@ jobs:
         with:
           context: .
           tags: |
-            ghcr.io/RTae/assessment:${{ env.GITHUB_SHA }}
+            ghcr.io/rtae/assessment:${{ env.GITHUB_SHA }}
           # build on feature branches, push only on main branch
           push: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Image digest
-        run: echo ghcr.io/RTae/assessment:${{ env.GITHUB_SHA }}
+        run: echo ghcr.io/rtae/assessment:${{ env.GITHUB_SHA }}
