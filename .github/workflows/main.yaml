@@ -31,6 +31,7 @@ jobs:
   build-and-push-docker-image:
     name: System integration test
     runs-on: ubuntu-latest
+    needs: unit-test
 
     steps:
       - uses: actions/checkout@v3
@@ -46,7 +47,7 @@ jobs:
           envkey_DB_USER: "admin_test"
           envkey_DB_PASSWORD: "418fec5f0f023b7a3f5766e8202f8e1c"
           envkey_DB_PORT: "5432"
-          envkey_DB_URL: postgresql://$DB_USER:$DB_PASSWORD@database.$DOMAIN:$DB_PORT/$DB_DATABASE?sslmode=disable
+          envkey_DB_URL: "postgresql://$DB_USER:$DB_PASSWORD@database.$DOMAIN:$DB_PORT/$DB_DATABASE?sslmode=disable"
 
       - name: Integration test inside Docker-compose
         run: docker compose -f docker-compose.test.yaml -p kkgo-ets-test up --build --abort-on-container-exit --exit-code-from expense_tracking
