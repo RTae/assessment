@@ -11,7 +11,9 @@ jobs:
   # ==============
 
   unit-test:
+    name: Unit test
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
 
@@ -21,13 +23,13 @@ jobs:
           go-version: 1.18
 
       - name: Install dependencies
-        run: go get .
+        run: go get ./app
 
       - name: Run unit test
         run: go test -v -tags unit ./...
 
   build-and-push-docker-image:
-    name: Build Docker image and push to repositories
+    name: System integration test
     runs-on: ubuntu-latest
 
     steps:
