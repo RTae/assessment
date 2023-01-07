@@ -238,5 +238,5 @@ PORT=:2565 DATABASE_URL=postgresql://admin_dev:4b2d5c67c29ad39dcb60a2ddcf6b0465@
 #### Unit test
 
 ```bash
-go test -v ./...
+go test -v -tags unit ./...
 ```

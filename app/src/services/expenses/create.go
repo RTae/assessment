@@ -13,8 +13,8 @@ func (h *handler) CreateExpense(c echo.Context) error {
 	err := c.Bind(&exp)
 	if err != nil {
 		return c.JSON(
-			http.StatusBadRequest,
-			ErrorResponse{Code: http.StatusBadRequest, Message: err.Error()},
+			http.StatusUnprocessableEntity,
+			ErrorResponse{Code: http.StatusUnprocessableEntity, Message: err.Error()},
 		)
 	}
 

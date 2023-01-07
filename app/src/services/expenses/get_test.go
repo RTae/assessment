@@ -24,7 +24,7 @@ func TestGetExpenseHandler(t *testing.T) {
 		expenseID := "1"
 		req := httptest.NewRequest(http.MethodGet, "/expenses", nil)
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
+		res := httptest.NewRecorder()
 
 		db, mock, close := handlers.MockDatabase(t)
 		defer close()
@@ -43,7 +43,7 @@ func TestGetExpenseHandler(t *testing.T) {
 			WillReturnRows(getMockRows)
 
 		h := handler{db}
-		c := e.NewContext(req, rec)
+		c := e.NewContext(req, res)
 		c.SetPath("/expense/:id")
 		c.SetParamNames("id")
 		c.SetParamValues(expenseID)
@@ -54,8 +54,8 @@ func TestGetExpenseHandler(t *testing.T) {
 
 		// Assert
 		if assert.NoError(t, err) {
-			assert.Equal(t, http.StatusOK, rec.Code)
-			assert.Equal(t, expected, strings.TrimSpace(rec.Body.String()))
+			assert.Equal(t, http.StatusOK, res.Code)
+			assert.Equal(t, expected, strings.TrimSpace(res.Body.String()))
 		}
 
 	})
@@ -66,13 +66,13 @@ func TestGetExpenseHandler(t *testing.T) {
 		expenseID := ""
 		req := httptest.NewRequest(http.MethodGet, "/expenses", nil)
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
+		res := httptest.NewRecorder()
 
 		db, _, close := handlers.MockDatabase(t)
 		defer close()
 
 		h := handler{db}
-		c := e.NewContext(req, rec)
+		c := e.NewContext(req, res)
 		c.SetPath("/expense/:id")
 		c.SetParamNames("id")
 		c.SetParamValues(expenseID)
@@ -83,8 +83,8 @@ func TestGetExpenseHandler(t *testing.T) {
 
 		// Assertions
 		if assert.NoError(t, err) {
-			assert.Equal(t, http.StatusUnprocessableEntity, rec.Code)
-			assert.Equal(t, expected, strings.TrimSpace(rec.Body.String()))
+			assert.Equal(t, http.StatusUnprocessableEntity, res.Code)
+			assert.Equal(t, expected, strings.TrimSpace(res.Body.String()))
 		}
 
 	})
@@ -95,7 +95,7 @@ func TestGetExpenseHandler(t *testing.T) {
 		expenseID := "dwdw"
 		req := httptest.NewRequest(http.MethodGet, "/expenses", nil)
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
+		res := httptest.NewRecorder()
 
 		db, mock, close := handlers.MockDatabase(t)
 		defer close()
@@ -105,7 +105,7 @@ func TestGetExpenseHandler(t *testing.T) {
 			WillReturnError(errors.New("invalid input syntax"))
 
 		h := handler{db}
-		c := e.NewContext(req, rec)
+		c := e.NewContext(req, res)
 		c.SetPath("/expense/:id")
 		c.SetParamNames("id")
 		c.SetParamValues(expenseID)
@@ -116,8 +116,8 @@ func TestGetExpenseHandler(t *testing.T) {
 
 		// Assertions
 		if assert.NoError(t, err) {
-			assert.Equal(t, http.StatusUnprocessableEntity, rec.Code)
-			assert.Equal(t, expected, strings.TrimSpace(rec.Body.String()))
+			assert.Equal(t, http.StatusUnprocessableEntity, res.Code)
+			assert.Equal(t, expected, strings.TrimSpace(res.Body.String()))
 		}
 
 	})
@@ -128,7 +128,7 @@ func TestGetExpenseHandler(t *testing.T) {
 		expenseID := "dwdw"
 		req := httptest.NewRequest(http.MethodGet, "/expenses", nil)
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
+		res := httptest.NewRecorder()
 
 		db, mock, close := handlers.MockDatabase(t)
 		defer close()
@@ -138,7 +138,7 @@ func TestGetExpenseHandler(t *testing.T) {
 			WillReturnError(errors.New("no rows in result set"))
 
 		h := handler{db}
-		c := e.NewContext(req, rec)
+		c := e.NewContext(req, res)
 		c.SetPath("/expense/:id")
 		c.SetParamNames("id")
 		c.SetParamValues(expenseID)
@@ -149,8 +149,8 @@ func TestGetExpenseHandler(t *testing.T) {
 
 		// Assertions
 		if assert.NoError(t, err) {
-			assert.Equal(t, http.StatusNotFound, rec.Code)
-			assert.Equal(t, expected, strings.TrimSpace(rec.Body.String()))
+			assert.Equal(t, http.StatusNotFound, res.Code)
+			assert.Equal(t, expected, strings.TrimSpace(res.Body.String()))
 		}
 
 	})
@@ -161,7 +161,7 @@ func TestGetExpenseHandler(t *testing.T) {
 		expenseID := "dwdw"
 		req := httptest.NewRequest(http.MethodGet, "/expenses", nil)
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
+		res := httptest.NewRecorder()
 
 		db, mock, close := handlers.MockDatabase(t)
 		defer close()
@@ -171,7 +171,7 @@ func TestGetExpenseHandler(t *testing.T) {
 			WillReturnError(sqlmock.ErrCancelled)
 
 		h := handler{db}
-		c := e.NewContext(req, rec)
+		c := e.NewContext(req, res)
 		c.SetPath("/expense/:id")
 		c.SetParamNames("id")
 		c.SetParamValues(expenseID)
@@ -182,8 +182,8 @@ func TestGetExpenseHandler(t *testing.T) {
 
 		// Assertions
 		if assert.NoError(t, err) {
-			assert.Equal(t, http.StatusInternalServerError, rec.Code)
-			assert.Equal(t, expected, strings.TrimSpace(rec.Body.String()))
+			assert.Equal(t, http.StatusInternalServerError, res.Code)
+			assert.Equal(t, expected, strings.TrimSpace(res.Body.String()))
 		}
 
 	})
@@ -196,7 +196,7 @@ func TestGetExpensesHandler(t *testing.T) {
 		e := echo.New()
 		req := httptest.NewRequest(http.MethodGet, "/expenses", nil)
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
+		res := httptest.NewRecorder()
 
 		getMockRows := sqlmock.NewRows([]string{"ID", "Title", "Amount", "Note", "Tags"}).
 			AddRow(
@@ -224,7 +224,7 @@ func TestGetExpensesHandler(t *testing.T) {
 			WillReturnRows(getMockRows)
 
 		h := handler{db}
-		c := e.NewContext(req, rec)
+		c := e.NewContext(req, res)
 		c.SetPath("/expense")
 		expected := "[{\"id\":1,\"title\":\"strawberry smoothie\",\"amount\":79,\"note\":\"night market promotion discount 10 bath\",\"tags\":[\"food\",\"beverage\"]},{\"id\":2,\"title\":\"Grill pork\",\"amount\":100,\"note\":\"night market promotion discount 50 bath\",\"tags\":[\"food\"]}]"
 
@@ -233,8 +233,8 @@ func TestGetExpensesHandler(t *testing.T) {
 
 		// Assertions
 		if assert.NoError(t, err) {
-			assert.Equal(t, http.StatusOK, rec.Code)
-			assert.Equal(t, expected, strings.TrimSpace(rec.Body.String()))
+			assert.Equal(t, http.StatusOK, res.Code)
+			assert.Equal(t, expected, strings.TrimSpace(res.Body.String()))
 		}
 
 	})
@@ -244,7 +244,7 @@ func TestGetExpensesHandler(t *testing.T) {
 		e := echo.New()
 		req := httptest.NewRequest(http.MethodGet, "/expenses", nil)
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
+		res := httptest.NewRecorder()
 
 		db, mock, err := sqlmock.New()
 		if err != nil {
@@ -256,7 +256,7 @@ func TestGetExpensesHandler(t *testing.T) {
 			WillReturnError(sqlmock.ErrCancelled)
 
 		h := handler{db}
-		c := e.NewContext(req, rec)
+		c := e.NewContext(req, res)
 		c.SetPath("/expense")
 		expected := "{\"statusCode\":500,\"message\":\"canceling query due to user request\"}"
 
@@ -265,8 +265,8 @@ func TestGetExpensesHandler(t *testing.T) {
 
 		// Assertions
 		if assert.NoError(t, err) {
-			assert.Equal(t, http.StatusInternalServerError, rec.Code)
-			assert.Equal(t, expected, strings.TrimSpace(rec.Body.String()))
+			assert.Equal(t, http.StatusInternalServerError, res.Code)
+			assert.Equal(t, expected, strings.TrimSpace(res.Body.String()))
 		}
 
 	})
