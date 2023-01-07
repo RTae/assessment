@@ -35,6 +35,12 @@ func initMiddleware(e *echo.Echo, db *sql.DB) {
 	e.Logger.SetLevel(log.INFO)
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {
+		if username == "user" || password == "123qweasdzxc" {
+			return true, nil
+		}
+		return false, nil
+	}))
 
 }
 

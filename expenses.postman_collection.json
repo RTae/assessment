@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "837100f7-a3cb-4b5b-ba0b-5ab3488067e0",
+		"_postman_id": "46665bc6-f618-433b-98fa-dd71edf277d5",
 		"name": "expenses",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "14595617"
+		"_exporter_id": "17185211"
 	},
 	"item": [
 		{
@@ -132,6 +132,65 @@
 			"response": []
 		},
 		{
+			"name": "get all expenses",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"should response success(200) and object of latest expense\", function () {",
+							"    var allCustomers = pm.response.json();",
+							"    var len = allCustomers.length;",
+							"    ",
+							"    pm.expect(len).to.be.above(0, \"expenses should not be empty\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "November 10, 2009"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:2565/expenses",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "2565",
+					"path": [
+						"expenses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "update latest expenses",
 			"event": [
 				{
@@ -192,65 +251,6 @@
 			"response": []
 		},
 		{
-			"name": "get all expenses",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"pm.test(\"should response success(200) and object of latest expense\", function () {",
-							"    var allCustomers = pm.response.json();",
-							"    var len = allCustomers.length;",
-							"    ",
-							"    pm.expect(len).to.be.above(0, \"expenses should not be empty\");",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
-					},
-					{
-						"key": "Authorization",
-						"type": "text",
-						"value": "November 10, 2009"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "http://localhost:2565/expenses",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "2565",
-					"path": [
-						"expenses"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Bonus middleware check Autorization",
 			"event": [
 				{
@@ -269,6 +269,9 @@
 				"disableBodyPruning": true
 			},
 			"request": {
+				"auth": {
+					"type": "apikey"
+				},
 				"method": "GET",
 				"header": [
 					{
@@ -300,6 +303,41 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "123qweasdzxc",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "user",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
