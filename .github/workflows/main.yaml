@@ -1,0 +1,51 @@
+name: KKGo-assessment-cicd
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  # ==============
+  # CI task
+  # ==============
+
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.15
+
+      - name: Run unit test
+        run: go test -v -tags unit ./...
+
+  build-and-push-docker-image:
+    name: Build Docker image and push to repositories
+    runs-on: ubuntu-latest
+    needs: quality-check
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          envkey_DOMAIN: "kkgo_test.com"
+          envkey_IMAGE_NAME: "kkgo"
+          envkey_VERSION: "1.0.0"
+          envkey_PORT: "2565"
+          envkey_DB_DATABASE: "expense_db"
+          envkey_DB_USER: "admin_test"
+          envkey_DB_PASSWORD: "418fec5f0f023b7a3f5766e8202f8e1c"
+          envkey_DB_PORT: "5432"
+          envkey_DB_URL: postgresql://$DB_USER:$DB_PASSWORD@database.$DOMAIN:$DB_PORT/$DB_DATABASE?sslmode=disable
+
+      - name: Integration test inside Docker-compose
+        run: docker compose -f docker-compose.test.yaml -p kkgo-ets-test up --build --abort-on-container-exit --exit-code-from expense_tracking
+
+      - name: Integration test inside Docker-compose cleanup
+        run: docker compose -f docker-compose.test.yaml -p kkgo-ets-test down
