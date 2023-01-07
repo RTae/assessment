@@ -109,3 +109,21 @@ func Uri(port string, paths ...string) string {
 	url := append([]string{host}, paths...)
 	return strings.Join(url, "/")
 }
+
+func SeedExpense(t *testing.T, settings settings.Config) Expenses {
+	body := `{
+		"title":"pay market",
+		"amount": 9999.00,
+		"note": "clear debt",
+		"tags": ["markets", "debt"]
+	}`
+
+	var createExpense Expenses
+	res := Request(t, http.MethodPost, Uri(fmt.Sprint(settings.Port), "expenses"), strings.NewReader(body))
+	err := res.Decode(&createExpense) // ใช้ decode ข้อมูลที่ได้จาก response body มาเก็บไว้ในตัวแปร u
+	if assert.NoError(t, err) {
+		assert.Equal(t, http.StatusCreated, res.StatusCode)
+	}
+
+	return createExpense
+}

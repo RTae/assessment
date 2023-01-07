@@ -27,7 +27,7 @@ func TestCreateExpenseHandler(t *testing.T) {
 		}`
 		req := httptest.NewRequest(http.MethodPost, "/expenses", strings.NewReader(body))
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
+		res := httptest.NewRecorder()
 
 		db, mock, close := handlers.MockDatabase(t)
 		defer close()
@@ -36,7 +36,7 @@ func TestCreateExpenseHandler(t *testing.T) {
 		mock.ExpectQuery("INSERT INTO expenses").WillReturnRows(insertMockRow)
 
 		h := handler{db}
-		c := e.NewContext(req, rec)
+		c := e.NewContext(req, res)
 		expected := "{\"id\":1,\"title\":\"strawberry smoothie\",\"amount\":79,\"note\":\"night market promotion discount 10 bath\",\"tags\":[\"food\",\"beverage\"]}"
 
 		// Act
@@ -44,8 +44,8 @@ func TestCreateExpenseHandler(t *testing.T) {
 
 		// Assert
 		if assert.NoError(t, err) {
-			assert.Equal(t, http.StatusCreated, rec.Code)
-			assert.Equal(t, expected, strings.TrimSpace(rec.Body.String()))
+			assert.Equal(t, http.StatusCreated, res.Code)
+			assert.Equal(t, expected, strings.TrimSpace(res.Body.String()))
 		}
 
 	})
@@ -56,7 +56,7 @@ func TestCreateExpenseHandler(t *testing.T) {
 		expected string
 	}{
 		{
-			"Should return bad request error if title is not correct",
+			"Should return unprocess entity error if title is not correct",
 			`{
 				"title": 213,
 				"amount": 79,
@@ -66,7 +66,7 @@ func TestCreateExpenseHandler(t *testing.T) {
 			"cannot unmarshal number into Go struct field Expenses.title of type string",
 		},
 		{
-			"Should return bad request error if amount is not correct",
+			"Should return unprocess entity error if amount is not correct",
 			`{
 				"title": "strawberry smoothie",
 				"amount": "79",
@@ -76,7 +76,7 @@ func TestCreateExpenseHandler(t *testing.T) {
 			"cannot unmarshal string into Go struct field Expenses.amount of type float32",
 		},
 		{
-			"Should return bad request error if note is not correct",
+			"Should return unprocess entity error if note is not correct",
 			`{
 				"title": "strawberry smoothie",
 				"amount": 79,
@@ -86,7 +86,7 @@ func TestCreateExpenseHandler(t *testing.T) {
 			"cannot unmarshal number into Go struct field Expenses.note of type string",
 		},
 		{
-			"Should return bad request error if tags is not correct",
+			"Should return unprocess entity error if tags is not correct",
 			`{
 				"title": "strawberry smoothie",
 				"amount": 79,
@@ -96,7 +96,7 @@ func TestCreateExpenseHandler(t *testing.T) {
 			"invalid character 'f' after object key:value pair",
 		},
 		{
-			"Should return bad request error if data in tags is not correct",
+			"Should return unprocess entity error if data in tags is not correct",
 			`{
 				"title": "strawberry smoothie",
 				"amount": 79,
@@ -114,7 +114,7 @@ func TestCreateExpenseHandler(t *testing.T) {
 			body := tt.body
 			req := httptest.NewRequest(http.MethodPost, "/expenses", strings.NewReader(body))
 			req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-			rec := httptest.NewRecorder()
+			res := httptest.NewRecorder()
 
 			db, mock, close := handlers.MockDatabase(t)
 			defer close()
@@ -123,7 +123,7 @@ func TestCreateExpenseHandler(t *testing.T) {
 			mock.ExpectQuery("INSERT INTO expenses").WillReturnRows(insertMockRow)
 
 			h := handler{db}
-			c := e.NewContext(req, rec)
+			c := e.NewContext(req, res)
 			expected := tt.expected
 
 			// Act
@@ -131,8 +131,8 @@ func TestCreateExpenseHandler(t *testing.T) {
 
 			// Assert
 			if assert.NoError(t, err) {
-				assert.Equal(t, http.StatusBadRequest, rec.Code)
-				assert.Regexp(t, expected, strings.TrimSpace(rec.Body.String()))
+				assert.Equal(t, http.StatusUnprocessableEntity, res.Code)
+				assert.Regexp(t, expected, strings.TrimSpace(res.Body.String()))
 			}
 
 		})
@@ -149,7 +149,7 @@ func TestCreateExpenseHandler(t *testing.T) {
 		}`
 		req := httptest.NewRequest(http.MethodPost, "/expenses", strings.NewReader(body))
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
+		res := httptest.NewRecorder()
 
 		db, mock, close := handlers.MockDatabase(t)
 		defer close()
@@ -157,7 +157,7 @@ func TestCreateExpenseHandler(t *testing.T) {
 		mock.ExpectQuery("INSERT INTO expenses").WillReturnError(sqlmock.ErrCancelled)
 
 		h := handler{db}
-		c := e.NewContext(req, rec)
+		c := e.NewContext(req, res)
 		expected := "{\"statusCode\":500,\"message\":\"canceling query due to user request\"}"
 
 		// Act
@@ -165,8 +165,8 @@ func TestCreateExpenseHandler(t *testing.T) {
 
 		// Assert
 		if assert.NoError(t, err) {
-			assert.Equal(t, http.StatusInternalServerError, rec.Code)
-			assert.Equal(t, expected, strings.TrimSpace(rec.Body.String()))
+			assert.Equal(t, http.StatusInternalServerError, res.Code)
+			assert.Equal(t, expected, strings.TrimSpace(res.Body.String()))
 		}
 
 	})

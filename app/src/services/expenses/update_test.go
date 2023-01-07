@@ -28,7 +28,7 @@ func TestUpdateExpense(t *testing.T) {
 		e := echo.New()
 		req := httptest.NewRequest(http.MethodPut, "/expense", strings.NewReader(body))
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
+		res := httptest.NewRecorder()
 
 		db, mock, close := handlers.MockDatabase(t)
 		defer close()
@@ -38,7 +38,7 @@ func TestUpdateExpense(t *testing.T) {
 			WillReturnRows(resultMockRow)
 
 		h := handler{db}
-		c := e.NewContext(req, rec)
+		c := e.NewContext(req, res)
 		c.SetPath("/expense/:id")
 		c.SetParamNames("id")
 		c.SetParamValues(updateExpenseID)
@@ -49,8 +49,8 @@ func TestUpdateExpense(t *testing.T) {
 
 		// Assertions
 		if assert.NoError(t, err) {
-			assert.Equal(t, http.StatusOK, rec.Code)
-			assert.Equal(t, expected, strings.TrimSpace(rec.Body.String()))
+			assert.Equal(t, http.StatusOK, res.Code)
+			assert.Equal(t, expected, strings.TrimSpace(res.Body.String()))
 		}
 
 	})
@@ -67,13 +67,13 @@ func TestUpdateExpense(t *testing.T) {
 		e := echo.New()
 		req := httptest.NewRequest(http.MethodPut, "/expense", strings.NewReader(body))
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
+		res := httptest.NewRecorder()
 
 		db, _, close := handlers.MockDatabase(t)
 		defer close()
 
 		h := handler{db}
-		c := e.NewContext(req, rec)
+		c := e.NewContext(req, res)
 		c.SetPath("/expense/:id")
 		c.SetParamNames("id")
 		c.SetParamValues(updateExpenseID)
@@ -84,8 +84,8 @@ func TestUpdateExpense(t *testing.T) {
 
 		// Assertions
 		if assert.NoError(t, err) {
-			assert.Equal(t, http.StatusUnprocessableEntity, rec.Code)
-			assert.Equal(t, expected, strings.TrimSpace(rec.Body.String()))
+			assert.Equal(t, http.StatusUnprocessableEntity, res.Code)
+			assert.Equal(t, expected, strings.TrimSpace(res.Body.String()))
 		}
 
 	})
@@ -102,7 +102,7 @@ func TestUpdateExpense(t *testing.T) {
 		}`
 		req := httptest.NewRequest(http.MethodPut, "/expenses", strings.NewReader(body))
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
+		res := httptest.NewRecorder()
 
 		db, mock, close := handlers.MockDatabase(t)
 		defer close()
@@ -113,7 +113,7 @@ func TestUpdateExpense(t *testing.T) {
 			WillReturnError(errors.New("invalid input syntax"))
 
 		h := handler{db}
-		c := e.NewContext(req, rec)
+		c := e.NewContext(req, res)
 		c.SetPath("/expense/:id")
 		c.SetParamNames("id")
 		c.SetParamValues(updateExpenseID)
@@ -124,8 +124,8 @@ func TestUpdateExpense(t *testing.T) {
 
 		// Assertions
 		if assert.NoError(t, err) {
-			assert.Equal(t, http.StatusUnprocessableEntity, rec.Code)
-			assert.Equal(t, expected, strings.TrimSpace(rec.Body.String()))
+			assert.Equal(t, http.StatusUnprocessableEntity, res.Code)
+			assert.Equal(t, expected, strings.TrimSpace(res.Body.String()))
 		}
 
 	})
@@ -142,7 +142,7 @@ func TestUpdateExpense(t *testing.T) {
 		}`
 		req := httptest.NewRequest(http.MethodPut, "/expenses", strings.NewReader(body))
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
+		res := httptest.NewRecorder()
 
 		db, mock, close := handlers.MockDatabase(t)
 		defer close()
@@ -153,7 +153,7 @@ func TestUpdateExpense(t *testing.T) {
 			WillReturnError(errors.New("no rows in result set"))
 
 		h := handler{db}
-		c := e.NewContext(req, rec)
+		c := e.NewContext(req, res)
 		c.SetPath("/expense/:id")
 		c.SetParamNames("id")
 		c.SetParamValues(updateExpenseID)
@@ -164,8 +164,8 @@ func TestUpdateExpense(t *testing.T) {
 
 		// Assertions
 		if assert.NoError(t, err) {
-			assert.Equal(t, http.StatusNotFound, rec.Code)
-			assert.Equal(t, expected, strings.TrimSpace(rec.Body.String()))
+			assert.Equal(t, http.StatusNotFound, res.Code)
+			assert.Equal(t, expected, strings.TrimSpace(res.Body.String()))
 		}
 
 	})
@@ -182,7 +182,7 @@ func TestUpdateExpense(t *testing.T) {
 		}`
 		req := httptest.NewRequest(http.MethodPut, "/expenses", strings.NewReader(body))
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-		rec := httptest.NewRecorder()
+		res := httptest.NewRecorder()
 
 		db, mock, close := handlers.MockDatabase(t)
 		defer close()
@@ -193,7 +193,7 @@ func TestUpdateExpense(t *testing.T) {
 			WillReturnError(sqlmock.ErrCancelled)
 
 		h := handler{db}
-		c := e.NewContext(req, rec)
+		c := e.NewContext(req, res)
 		c.SetPath("/expense/:id")
 		c.SetParamNames("id")
 		c.SetParamValues(updateExpenseID)
@@ -204,8 +204,8 @@ func TestUpdateExpense(t *testing.T) {
 
 		// Assertions
 		if assert.NoError(t, err) {
-			assert.Equal(t, http.StatusInternalServerError, rec.Code)
-			assert.Equal(t, expected, strings.TrimSpace(rec.Body.String()))
+			assert.Equal(t, http.StatusInternalServerError, res.Code)
+			assert.Equal(t, expected, strings.TrimSpace(res.Body.String()))
 		}
 
 	})
