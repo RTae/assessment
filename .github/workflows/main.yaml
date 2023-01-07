@@ -99,6 +99,7 @@ jobs:
             ghcr.io/rtae/assessment:${{ env.GITHUB_SHA }}
           # build on feature branches, push only on main branch
           push: ${{ github.ref == 'refs/heads/main' }}
+          file: infra/prod/expense-tracking/build-image/Dockerfile
 
       - name: Image digest
         run: echo ghcr.io/rtae/assessment:${{ env.GITHUB_SHA }}
