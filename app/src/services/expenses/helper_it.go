@@ -26,6 +26,8 @@ type Response struct {
 
 func SetupServer(t *testing.T) (*echo.Echo, settings.Config, func()) {
 	e := echo.New()
+	e.HideBanner = true
+	e.HidePort = true
 	var settings = settings.Setting()
 	database, close := handlers.InitDB(settings)
 
