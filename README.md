@@ -273,14 +273,15 @@ DB_PORT=5432
 DB_URL=postgresql://$DB_USER:$DB_PASSWORD@database.$DOMAIN:$DB_PORT/$DB_DATABASE?sslmode=disable
 ```
 
+   2. Run integration test
 
-   2. Start service
+   3. Start service with docker (optional)
 
 ```bash
 docker compose -f docker-compose.test.yaml -p kkgo-ets-test up --build --abort-on-container-exit --exit-code-from expense_tracking
 ```
 
-   3. Down service (optional)
+   4. Down service with docker (optional)
 ```bash
 docker compose -f docker-compose.test.yaml -p kkgo-ets-test down
 ```
